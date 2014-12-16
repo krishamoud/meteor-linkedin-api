@@ -34,142 +34,121 @@ var linkedin = Linkedin.init('my_access_token', {
 
 We regret to use 1.0 for authentication and linkedin also supports 2.0. So lets start using it. The below example is inspired from `express.js` but good enough to give the walkthrough.
 
+
+
+## Companies
+
+Supports all the calls as per the documentation available at: [LinkedIn Companies API](http://developer.linkedin.com/documents/company-lookup-api-and-fields).
+
 ```javascript
-app.get('/oauth/linkedin', function(req, res) {
-    // This will ask for permisssions etc and redirect to callback url.
-    Linkedin.auth.authorize(res, ['r_basicprofile', 'r_fullprofile', 'r_emailaddress', 'r_network', 'r_contactinfo', 'rw_nus', 'rw_groups', 'w_messages']);
+linkedin.companies.company('162479', function(err, company) {
+    // Here you go
 });
 
-app.get('/oauth/linkedin/callback', function(req, res) {
-    Linkedin.auth.getAccessToken(res, req.query.code, function(err, results) {
-        if ( err )
-        return console.error(err);
+linkedin.companies.name('logica', function(err, company) {
+    // Here you go
+});
 
-        /**
-        * Results have something like:
-        * {"expires_in":5184000,"access_token":". . . ."}
-        */
+linkedin.companies.email_domain('apple.com', function(err, company) {
+    // Here you go
+});
 
-        console.log(results);
-        return res.redirect('/');
-        });
-        });
-        ```
+linkedin.companies.multiple('162479,universal-name=linkedin', function(err, companies) {
+    // Here you go
+});
 
-        ## Companies
+linkedin.companies.asAdmin(function(err, companies) {
+    // Here you go
+});
+```
 
-        Supports all the calls as per the documentation available at: [LinkedIn Companies API](http://developer.linkedin.com/documents/company-lookup-api-and-fields).
+## Profile
 
-        ```javascript
+Searches for the profiles as per the criteria.
 
-        linkedin.companies.company('162479', function(err, company) {
-            // Here you go
-            });
+### Logged In User Profile.
 
-            linkedin.companies.name('logica', function(err, company) {
-                // Here you go
-                });
+```javascript
+linkedin.people.me(function(err, $in) {
+    // Loads the profile of access token owner.
+});
 
-                linkedin.companies.email_domain('apple.com', function(err, company) {
-                    // Here you go
-                    });
+OR
 
-                    linkedin.companies.multiple('162479,universal-name=linkedin', function(err, companies) {
-                        // Here you go
-                        });
+linkedin.people.me(['id', 'first-name', 'last-name'], function(err, $in) {
+    // Loads the profile of access token owner.
+});
+```
 
-                        linkedin.companies.asAdmin(function(err, companies) {
-                            // Here you go
-                            });
-                            ```
+### Profile by Public URL.
 
-                            ## Profile
+```javascript
+linkedin.people.url('long_public_url_here', function(err, $in) {
+    // Returns dob, education
+});
 
-                            Searches for the profiles as per the criteria.
+OR
 
-                            ### Logged In User Profile.
+linkedin.people.url('long_public_url_here', ['id', 'first-name', 'last-name'], function(err, $in) {
+    // Returns dob, education
+});
+```
 
-                            ```javascript
-                            linkedin.people.me(function(err, $in) {
-                                // Loads the profile of access token owner.
-                                });
+### Profile by Id.
 
-                                OR
+```javascript
+linkedin.people.id('linkedin_id', function(err, $in) {
+    // Loads the profile by id.
+});
 
-                                linkedin.people.me(['id', 'first-name', 'last-name'], function(err, $in) {
-                                    // Loads the profile of access token owner.
-                                    });
-                                    ```
+OR
 
-                                    ### Profile by Public URL.
+linkedin.people.id('linkedin_id', ['id', 'first-name', 'last-name'], function(err, $in) {
+    // Loads the profile by id.
+});
 
-                                    ```javascript
-                                    linkedin.people.url('long_public_url_here', function(err, $in) {
-                                        // Returns dob, education
-                                        });
+```
 
-                                        OR
+## Connections
 
-                                        linkedin.people.url('long_public_url_here', ['id', 'first-name', 'last-name'], function(err, $in) {
-                                            // Returns dob, education
-                                            });
-                                            ```
+Invokes LinkedIn's Connections API.
 
-                                            ### Profile by Id.
+```javascript
+linkedin.connections.retrieve(function(err, connections) {
+    // Here you go! Got your connections!
+});
 
-                                            ```javascript
-                                            linkedin.people.id('linkedin_id', function(err, $in) {
-                                                // Loads the profile by id.
-                                                });
+```
 
-                                                OR
+## Groups
 
-                                                linkedin.people.id('linkedin_id', ['id', 'first-name', 'last-name'], function(err, $in) {
-                                                    // Loads the profile by id.
-                                                    });
+Implements wrapper for `LinkedIn Group API` and provides interface to invoke API endpoints.
 
-                                                    ```
+PS: For now, we just have feeds available.
 
-                                                    ## Connections
+### Group discussions by Group ID
+```javascript
+linkedin.group.feeds(3769732, function(err, data) {
+    // data: variable is ready to use.
+});
+```
 
-                                                    Invokes LinkedIn's Connections API.
+OR If you want to have custom field selector, take a look at this;
 
-                                                    ```javascript
-                                                    linkedin.connections.retrieve(function(err, connections) {
-                                                        // Here you go! Got your connections!
-                                                        });
+```javascript
+linkedin.group.feeds(3769732, ['field', 'field2', 'field3'] , function(err, data) {
+    // data: variable is ready to use.
+});
+```
 
-                                                        ```
+OR even if you want to have custom sorting parameters, you can just pass them as third argument:
 
-                                                        ## Groups
+```javascript
+linkedin.group.feeds(3769732, ['field', 'field2', 'field3'], {order: 'popularity'}, function(err, data) {
+    // data: variable is ready to use.
+});
+```
 
-                                                        Implements wrapper for `LinkedIn Group API` and provides interface to invoke API endpoints.
+## Author
 
-                                                        PS: For now, we just have feeds available.
-
-                                                        ### Group discussions by Group ID
-                                                        ```javascript
-                                                        linkedin.group.feeds(3769732, function(err, data) {
-                                                            // data: variable is ready to use.
-                                                            });
-                                                            ```
-
-                                                            OR If you want to have custom field selector, take a look at this;
-
-                                                            ```javascript
-                                                            linkedin.group.feeds(3769732, ['field', 'field2', 'field3'] , function(err, data) {
-                                                                // data: variable is ready to use.
-                                                                });
-                                                                ```
-
-                                                                OR even if you want to have custom sorting parameters, you can just pass them as third argument:
-
-                                                                ```javascript
-                                                                linkedin.group.feeds(3769732, ['field', 'field2', 'field3'], {order: 'popularity'}, function(err, data) {
-                                                                    // data: variable is ready to use.
-                                                                    });
-                                                                    ```
-
-                                                                    ## Author
-
-                                                                    This wrapper has been written & currently under maintenance by [Hamza Waqas](http://github.com/ArkeologeN). He's using twitter at: [@HamzaWaqas](http://twitter.com/HamzaWaqas)
+The original wrapper was written & currently under maintenance by [Hamza Waqas](http://github.com/ArkeologeN). He's using twitter at: [@HamzaWaqas](http://twitter.com/HamzaWaqas)

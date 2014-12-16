@@ -2,7 +2,7 @@ Package.describe({
   name: 'khamoud:linkedin-api',
   summary: ' Meteor wrapper for the linkedin api.',
   version: '1.0.0',
-  git: ' /* Fill me in! */ '
+  git: 'https://github.com/krishamoud/meteor-linkedin-api'
 });
 
 Npm.depends({'node-linkedin': '0.3.4'});
