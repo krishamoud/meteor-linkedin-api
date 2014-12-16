@@ -30,11 +30,6 @@ var linkedin = Linkedin.init('my_access_token', {
 });
 ```
 
-## OAuth 2.0
-
-We regret to use 1.0 for authentication and linkedin also supports 2.0. So lets start using it. The below example is inspired from `express.js` but good enough to give the walkthrough.
-
-
 
 ## Companies
 
